@@ -1,6 +1,8 @@
 import pygame as pg
 
+# Initialize variables for later use
 msg = None
+playAgainDisplayed = False
 
 # Handles all game events
 def handle(btns, nova, wolf, window):
@@ -11,38 +13,47 @@ def handle(btns, nova, wolf, window):
 
         # Runs when a mouse button is released
         if event.type == pg.constants.MOUSEBUTTONUP:
-            # Declare msg globally
-            # Reset msg on every click
-            global msg
-            msg = None
+            # If game isn't done, accept clicks
+            if not playAgainDisplayed:
+                # Declare msg globally
+                # Reset msg on every click
+                global msg
+                msg = None
 
-            eat, jog, run, sleep = 0, 1, 2, 3 # Position of each button in btns
-            pos = pg.mouse.get_pos() # Position of mouse on screen
+                eat, jog, run, sleep = 0, 1, 2, 3 # Position of each button in btns
+                pos = pg.mouse.get_pos() # Position of mouse on screen
 
-            # Check if/what button was clicked
-            # Verify that the action can be done
-            # Call the method for the button
-            # Call the method for Wolf's move
+                # Check if/what button was clicked
+                # Verify that the action can be done
+                # Call the method for the button
+                # Call the method for Wolf's move
 
-            if btns[eat].collidepoint(pos):
-                if nova.hunger < nova.maxHunger:
-                    nova.Eat()
+                if btns[eat].collidepoint(pos):
+                    if nova.hunger < nova.maxHunger:
+                        nova.Eat()
+                        wolf.ChooseAction()
+                    else: msg = f"Nova is full. The wolves are {abs(nova.dist - wolf.dist)}km away!"
+
+                if btns[jog].collidepoint(pos):
+                    nova.Jog()
                     wolf.ChooseAction()
-                else: msg = f"Nova is full. The wolves are {abs(nova.dist - wolf.dist)}km away!"
 
-            if btns[jog].collidepoint(pos):
-                nova.Jog()
-                wolf.ChooseAction()
-
-            if btns[run].collidepoint(pos):
-                nova.Run()
-                wolf.ChooseAction()
-
-            if btns[sleep].collidepoint(pos):
-                if nova.sleep < nova.maxSleep:
-                    nova.Sleep()
+                if btns[run].collidepoint(pos):
+                    nova.Run()
                     wolf.ChooseAction()
-                else: msg = f"Nova isn't tired. The wolves are {abs(nova.dist - wolf.dist)}km away!"
+
+                if btns[sleep].collidepoint(pos):
+                    if nova.sleep < nova.maxSleep:
+                        nova.Sleep()
+                        wolf.ChooseAction()
+                    else: msg = f"Nova isn't tired. The wolves are {abs(nova.dist - wolf.dist)}km away!"
+            # If game is done, only accept play again
+            else:
+                pos = pg.mouse.get_pos() # Position of mouse on screen
+
+                # Check if play again was clicked
+                if btnPlayAgain.collidepoint(pos):
+                    playAgain()
 
 # Checks if nova is dead
 def isDead(nova, wolf, window):
@@ -51,10 +62,15 @@ def isDead(nova, wolf, window):
     elif nova.hunger <= 0: outputMsg(window, "Nova died! She ran out of hunger!")
     elif nova.energy <= 0: outputMsg(window, "Nova died! She ran out of energy!")
     elif nova.sleep <= 0: outputMsg(window, "Nova died! She ran out of sleep!")
+    else: return False
+
+    return True
 
 # Checks if nova won
 def isWon(nova, window):
-    if nova.dist >= 200: outputMsg(window, "Nova won! She made it home safely thanks to your help!")
+    if nova.dist >= 200:
+        outputMsg(window, "Nova won! She made it home safely thanks to your help!")
+        return True
 
 # Update status bar
 def updateStatus(window, nova):
@@ -75,13 +91,34 @@ def handleOutput(window, nova, wolf):
 def outputMsg(window, msg):
     pg.draw.rect(window, (141, 141, 141), (0, 250, 500, 50)) # Draw the output bar
 
-    # Font object for text
-    font = pg.font.SysFont('cambria', 15)
-
-    # Draw the output bar
-    pg.draw.rect(window, (141, 141, 141), (0, 250, 500, 50))
-
     # Add output to the output bar
-    output = font.render(f">> {msg}", True, (0, 0, 0))
-    height = output.get_rect().height
-    window.blit(output, (10, 275 - height / 2))
+    font = pg.font.SysFont('cambria', 15) # Font object for text
+    output = font.render(f">> {msg}", True, (0, 0, 0)) # Text to output
+    height = output.get_rect().height # Get the size of the text for use in alignment
+    window.blit(output, (10, 275 - height / 2)) # Output the text to the output bar
+
+# Displays play again dialouge
+def showPlayAgainDialogue(window):
+    # Declare variables globally
+    global btnPlayAgain, playAgainDisplayed
+
+    btnPlayAgain = pg.draw.rect(window, (141, 141, 141), (150, 110, 200, 80)) # Draw the button
+
+    # Add text to the play again button
+    font = pg.font.SysFont('cambria', 30) # Font object for text
+    text = font.render("Play Again", True, (0, 0, 0)) # Text to output
+    width, height = text.get_rect().width, text.get_rect().height # Get the size of the text for use in centering it
+    window.blit(text, (250 - width / 2, 150 - height / 2)) # Output the text to the play again button (centered)
+
+    # Update the game to 'play again screen mode'
+    playAgainDisplayed = True
+
+def playAgain():
+    # Declare variables globally
+    global playAgainDisplayed
+
+    playAgainDisplayed = False # Remove the play again screen
+
+    # Reinitialize the game
+    from Main import init
+    init()

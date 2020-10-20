@@ -1,21 +1,23 @@
 import pygame as pg
 import pygame.freetype as pg_ft
 import EventHandler as EH
-from Classes import Nova, Wolf
+import Classes
 
 # Initialize used pygame modules
 pg_ft.init()
 pg.font.init()
 
+# Setup the game window
+window = pg.display.set_mode((500, 400))
+pg.display.set_caption('Homeward Bound')
+pg.display.set_icon(pg.image.load("icon.png"))
+
 # Called to initialize game
 def init():
     # Declare variables globally
-    global window, btns, Nova, Wolf
+    global btns, Nova, Wolf
 
-    # Setup the game window
-    window = pg.display.set_mode((500, 400))
-    pg.display.set_caption('Homeward Bound')
-    pg.display.set_icon(pg.image.load("icon.png"))
+    # Make window white
     window.fill((255, 255, 255))
 
     # Create list of game buttons
@@ -35,7 +37,7 @@ def init():
     font.render_to(window, (393, 342), 'Sleep', (0, 0, 0))
 
     # Initialize Nova and Wolf
-    Nova, Wolf = Nova(), Wolf()
+    Nova, Wolf = Classes.Nova(), Classes.Wolf()
 
 init() # Initialize the game
 
@@ -50,8 +52,11 @@ while True:
     # Handle output to the screen
     EH.handleOutput(window, Nova, Wolf)
 
-    EH.isDead(Nova, Wolf, window) # Check if Nova died    
-    EH.isWon(Nova, window) # Check if Nova won
+    # Check if Nova died and display play again screen
+    if EH.isDead(Nova, Wolf, window): EH.showPlayAgainDialogue(window)
+
+    # Check if Nova won and display play again screen
+    if EH.isWon(Nova, window): EH.showPlayAgainDialogue(window)
 
     # Update the game display
     pg.display.update()
