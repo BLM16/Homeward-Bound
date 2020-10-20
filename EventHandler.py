@@ -13,7 +13,9 @@ def handle(btns, nova, wolf, window):
 
         # Runs when a mouse button is released
         if event.type == pg.constants.MOUSEBUTTONUP:
-            # If game isn't done, accept clicks
+            pos = pg.mouse.get_pos() # Position of mouse on screen
+
+            # If game isn't done, accept button clicks
             if not playAgainDisplayed:
                 # Declare msg globally
                 # Reset msg on every click
@@ -21,7 +23,6 @@ def handle(btns, nova, wolf, window):
                 msg = None
 
                 eat, jog, run, sleep = 0, 1, 2, 3 # Position of each button in btns
-                pos = pg.mouse.get_pos() # Position of mouse on screen
 
                 # Check if/what button was clicked
                 # Verify that the action can be done
@@ -49,13 +50,10 @@ def handle(btns, nova, wolf, window):
                     else: msg = f"Nova isn't tired. The wolves are {abs(nova.dist - wolf.dist)}km away!"
             # If game is done, only accept play again
             else:
-                pos = pg.mouse.get_pos() # Position of mouse on screen
-
                 # Check if play again was clicked
-                if btnPlayAgain.collidepoint(pos):
-                    playAgain()
+                if btnPlayAgain.collidepoint(pos): playAgain()
 
-# Checks if nova is dead
+# Checks if nova died
 def isDead(nova, wolf, window):
     if wolf.dist >= nova.dist: outputMsg(window, "Nova died! The wolves caught her, but she was a tasty snack!")
     elif nova.health <= 0: outputMsg(window, "Nova died! She ran out of health!")
@@ -72,7 +70,7 @@ def isWon(nova, window):
         outputMsg(window, "Nova won! She made it home safely thanks to your help!")
         return True
 
-# Update status bar
+# Updates status bar
 def updateStatus(window, nova):
     pg.draw.rect(window, (141, 141, 141), (0, 0, 500, 50)) # Draw the status bar
 
@@ -113,11 +111,13 @@ def showPlayAgainDialogue(window):
     # Update the game to 'play again screen mode'
     playAgainDisplayed = True
 
+# Resets variables and GUI
 def playAgain():
-    # Declare variables globally
+    # Declare playAgainDisplayed globally
     global playAgainDisplayed
 
-    playAgainDisplayed = False # Remove the play again screen
+    # Remove the play again screen
+    playAgainDisplayed = False
 
     # Reinitialize the game
     from Main import init
