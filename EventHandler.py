@@ -70,9 +70,18 @@ def isWon(nova, window):
         outputMsg(window, "Nova won! She made it home safely thanks to your help!")
         return True
 
+# Cover previous layer with forest image
+def forestOverlay(window):
+    # Add forest image to screen
+    bg = pg.transform.scale(pg.image.load("./images/ForestBG.jpg"), (500, 300)) # Load and size the image
+    window.blit(bg, (0, 0)) # Output the image
+
 # Updates status bar
 def updateStatus(window, nova):
-    pg.draw.rect(window, (141, 141, 141), (0, 0, 500, 50)) # Draw the status bar
+    # Add status bar to screen
+    bar = pg.Surface((500, 50)).convert_alpha() # Create and size the status bar
+    bar.fill((200, 255, 0, 100)) # Color the status bar
+    window.blit(bar, (0, 0)) # Output status bar
 
     # Add Nova's status to the status bar
     font = pg.font.SysFont('cambria', 15) # Font object for text
@@ -87,7 +96,10 @@ def handleOutput(window, nova, wolf):
 
 # Outputs a message to the output bar
 def outputMsg(window, msg):
-    pg.draw.rect(window, (141, 141, 141), (0, 250, 500, 50)) # Draw the output bar
+    # Add output bar to screen
+    bar = pg.Surface((500, 50)).convert_alpha() # Create and size the output bar
+    bar.fill((200, 255, 0, 130)) # Color the output
+    window.blit(bar, (0, 250)) # Output the output bar
 
     # Add output to the output bar
     font = pg.font.SysFont('cambria', 15) # Font object for text

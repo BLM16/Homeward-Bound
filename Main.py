@@ -17,8 +17,8 @@ def init():
     # Declare variables globally
     global btns, Nova, Wolf
 
-    # Make window white
-    window.fill((255, 255, 255))
+    # Make window brown
+    window.fill((55, 53, 30))
 
     # Create list of game buttons
     btns = [
@@ -45,6 +45,9 @@ init() # Initialize the game
 while True:
     # Call the event handler
     EH.handle(btns, Nova, Wolf, window)
+
+    # Cover previous layer with forest image
+    EH.forestOverlay(window)
 
     # Update status bar
     EH.updateStatus(window, Nova)
