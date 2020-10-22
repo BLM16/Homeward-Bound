@@ -5,7 +5,7 @@ Homeward Bound
 
 > Author: Bradley Myers
 
-> Date created: 08-10-2020 | Last updated: 20-10-2020
+> Date created: 08-10-2020 | Last updated: 22-10-2020
 
 ## Gameplay
 

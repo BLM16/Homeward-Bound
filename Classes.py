@@ -29,9 +29,9 @@ class Creature():
         lostSleep = rand(9, 14)
 
         # Update Creature's attributes
-        self.energy -= lostEnergy
-        self.hunger -= lostHunger
-        self.sleep -= lostSleep
+        self.energy = 0 if self.energy - lostEnergy < 0 else self.energy - lostEnergy
+        self.hunger = 0 if self.hunger - lostHunger < 0 else self.hunger - lostHunger
+        self.sleep = 0 if self.sleep - lostSleep < 0 else self.sleep - lostSleep
 
         # Update distance traveled (limit to 200)
         self.dist = 200 if self.dist + travelDist > 200 else self.dist + travelDist
@@ -56,9 +56,9 @@ class Nova(Creature):
         lostSleep = rand(6, 9)
 
         # Update Nova's attributes
-        self.energy -= lostEnergy
-        self.hunger -= lostHunger
-        self.sleep -= lostSleep
+        self.energy = 0 if self.energy - lostEnergy < 0 else self.energy - lostEnergy
+        self.hunger = 0 if self.hunger - lostHunger < 0 else self.hunger - lostHunger
+        self.sleep = 0 if self.sleep - lostSleep < 0 else self.sleep - lostSleep
 
         # Update distance traveled (limit to 200)
         self.dist = 200 if self.dist + travelDist > 200 else self.dist + travelDist
@@ -68,9 +68,7 @@ class Nova(Creature):
         healthGain = rand(6, 17) # Generate random health gain for sleep
         energyGain = rand(17, 25) # Generate random energy gain for sleep
 
-        # Add the sleep gain to Nova's sleep (limit to maxSleep)
-        # Add the health gain to Nova's health (limit to maxHealth)
-        # Add the energy gain to Nova's energy (limit to maxEnergy)
+        # Update Nova's attributes
         self.sleep = self.maxSleep if self.sleep + sleepGain > self.maxSleep else self.sleep + sleepGain
         self.health = self.maxHealth if self.health + healthGain > self.maxHealth else self.health + healthGain
         self.energy = self.maxEnergy if self.energy + energyGain > self.maxEnergy else self.energy + energyGain
@@ -80,9 +78,7 @@ class Nova(Creature):
         healthGain = rand(18, 27) # Generate random health gain for eat
         energyGain = rand(14, 23) # Generate random energy gain for eat
 
-        # Add the hunger gain to Nova's hunger (limit to maxHunger)
-        # Add the health gain to Nova's health (limit to maxHealth)
-        # Add the energy gain to Nova's energy (limit to maxEnergy)
+        # Update Nova's attributes
         self.hunger = self.maxHunger if self.hunger + hungerGain > self.maxHunger else self.hunger + hungerGain
         self.health = self.maxHealth if self.health + healthGain > self.maxHealth else self.health + healthGain
         self.energy = self.maxEnergy if self.energy + energyGain > self.maxEnergy else self.energy + energyGain
