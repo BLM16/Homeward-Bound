@@ -55,11 +55,13 @@ def handle(btns, nova, wolf, window):
 
 # Checks if nova died
 def isDead(nova, wolf, window):
-    if wolf.dist >= nova.dist: outputMsg(window, "Nova died! The wolves caught her, but she was a tasty snack!")
-    elif nova.health <= 0: outputMsg(window, "Nova died! She ran out of health!")
-    elif nova.hunger <= 0: outputMsg(window, "Nova died! She ran out of hunger!")
-    elif nova.energy <= 0: outputMsg(window, "Nova died! She ran out of energy!")
-    elif nova.sleep <= 0: outputMsg(window, "Nova died! She ran out of sleep!")
+    global msg
+
+    if wolf.dist >= nova.dist: msg = "Nova died! The wolves caught her, but she was a tasty snack!"
+    elif nova.health <= 0: msg = "Nova died! She ran out of health!"
+    elif nova.hunger <= 0: msg = "Nova died! She ran out of hunger!"
+    elif nova.energy <= 0: msg = "Nova died! She ran out of energy!"
+    elif nova.sleep <= 0: msg = "Nova died! She ran out of sleep!"
     else: return False
 
     return True
@@ -67,7 +69,9 @@ def isDead(nova, wolf, window):
 # Checks if nova won
 def isWon(nova, window):
     if nova.dist >= 200:
-        outputMsg(window, "Nova won! She made it home safely thanks to your help!")
+        global msg
+        
+        msg = "Nova won! She made it home safely thanks to your help!"
         return True
 
 # Cover previous layer with forest image
@@ -126,10 +130,11 @@ def showPlayAgainDialogue(window):
 # Resets variables and GUI
 def playAgain():
     # Declare playAgainDisplayed globally
-    global playAgainDisplayed
+    global playAgainDisplayed, msg
 
     # Remove the play again screen
     playAgainDisplayed = False
+    msg = None
 
     # Reinitialize the game
     from Main import init
