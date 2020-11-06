@@ -12,8 +12,9 @@ window = pg.display.set_mode((500, 400))
 pg.display.set_caption('Homeward Bound')
 pg.display.set_icon(pg.image.load("icon.png"))
 
-# Called to initialize game
 def init():
+    """Initializes game objects"""
+
     # Declare variables globally
     global btns, Nova, Wolf
 

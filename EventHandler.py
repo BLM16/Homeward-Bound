@@ -9,9 +9,9 @@ IMG_SLEEPING = pg.transform.scale(pg.image.load('./images/dog_sleeping.png'), (2
 msg = None
 playAgainDisplayed = False
 
-# Handles all game events
 def handle(btns, nova, wolf, window):
-    # Get the event
+    """Handles all game events such as button clicks and UI updates"""
+
     for event in pg.event.get():
         # If the close button is clicked, stop the game
         if event.type == pg.constants.QUIT: quit(200)
@@ -33,6 +33,7 @@ def handle(btns, nova, wolf, window):
                 # Verify that the action can be done
                 # Call the method for the button
                 # Call the method for Wolf's move
+                # Play the animation for the action
 
                 if btns[eat].collidepoint(pos):
                     if nova.hunger < nova.maxHunger:
@@ -62,12 +63,11 @@ def handle(btns, nova, wolf, window):
                         animateAction("sleep", window, nova, wolf)
                     else: msg = f"Nova isn't tired. The wolves are {abs(nova.dist - wolf.dist)}km away!"
             # If game is done, only accept play again
-            else:
-                # Check if play again was clicked
-                if btnPlayAgain.collidepoint(pos): playAgain()
+            elif btnPlayAgain.collidepoint(pos): playAgain()
 
-# Checks if nova died
 def isDead(nova, wolf, window):
+    """Checks if Nova is dead and sets the output message to reflect her death"""
+
     global msg
 
     if wolf.dist >= nova.dist: msg = "Nova died! The wolves caught her, but she was a tasty snack!"
@@ -79,22 +79,24 @@ def isDead(nova, wolf, window):
 
     return True
 
-# Checks if nova won
 def isWon(nova, window):
+    """Checks if Nova has won and sets the output message to reflect that"""
+
     if nova.dist >= 200:
         global msg
         
         msg = "Nova won! She made it home safely thanks to your help!"
         return True
 
-# Cover previous layer with forest image
 def forestOverlay(window):
-    # Add forest image to screen
+    """Covers screen with forest image to hide previous frame"""
+
     bg = pg.transform.scale(pg.image.load("./images/ForestBG.jpg"), (500, 300)) # Load and size the image
     window.blit(bg, (0, 0)) # Output the image
 
-# Updates status bar
 def updateStatus(window, nova):
+    """Updates the status bar to reflect Nova's stats"""
+
     # Add status bar to screen
     bar = pg.Surface((500, 50)).convert_alpha() # Create and size the status bar
     bar.fill((200, 255, 0, 100)) # Color the status bar
@@ -103,16 +105,17 @@ def updateStatus(window, nova):
     # Add Nova's status to the status bar
     font = pg.font.SysFont('cambria', 15) # Font object for text
     status = font.render(str(nova), True, (0, 0, 0)) # Nova's attributes rendered from class' __repr__()
-    width, height = status.get_rect().width, status.get_rect().height # Get the size of the text for use in centering it
+    width, height = status.get_width(), status.get_height() # Get the size of the text for use in centering it
     window.blit(status, (250 - width / 2, 25 - height / 2)) # Output the status to the status bar (centered)
 
-# Handles output messages
 def handleOutput(window, nova, wolf):
-    # Outputs special message if there is one, otherwise outputs default message
+    """Handles message output by calling outputMsg() with the output message (if it exists) or the default message"""
+
     outputMsg(window, msg) if msg else outputMsg(window, f"The wolves are {abs(nova.dist - wolf.dist)}km away!")
 
-# Outputs a message to the output bar
 def outputMsg(window, msg):
+    """Outputs the message from handleOutput() to the output bar"""
+
     # Add output bar to screen
     bar = pg.Surface((500, 50)).convert_alpha() # Create and size the output bar
     bar.fill((200, 255, 0, 130)) # Color the output
@@ -121,10 +124,12 @@ def outputMsg(window, msg):
     # Add output to the output bar
     font = pg.font.SysFont('cambria', 15) # Font object for text
     output = font.render(f">> {msg}", True, (0, 0, 0)) # Text to output
-    height = output.get_rect().height # Get the size of the text for use in alignment
+    height = output.get_height() # Get the size of the text for use in alignment
     window.blit(output, (10, 275 - height / 2)) # Output the text to the output bar
 
 def animateAction(action, window, nova, wolf):
+    """Animates an image to reflect the player's action"""
+
     # Create a dictionary to link actions to images
     actionImgs = {
         "eat": IMG_EATING,
@@ -177,8 +182,9 @@ def animateAction(action, window, nova, wolf):
             CLOCK.tick(60)
             pg.display.update()
 
-# Displays play again dialouge
 def showPlayAgainDialogue(window):
+    """Displays the play again button and dialogue"""
+
     # Declare variables globally
     global btnPlayAgain, playAgainDisplayed
 
@@ -193,9 +199,10 @@ def showPlayAgainDialogue(window):
     # Update the game to 'play again screen mode'
     playAgainDisplayed = True
 
-# Resets variables and GUI
 def playAgain():
-    # Declare playAgainDisplayed globally
+    """Resets the game variables and GUI and calls the init() method in Main.py"""
+
+    # Declare variables globally
     global playAgainDisplayed, msg
 
     # Remove the play again screen
