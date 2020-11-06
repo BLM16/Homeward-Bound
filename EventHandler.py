@@ -1,5 +1,10 @@
 import pygame as pg
 
+# Load image resources
+IMG_EATING = pg.transform.scale(pg.image.load('./images/dog_eating.png'), (200, 100))
+IMG_MOVING = pg.transform.scale(pg.image.load('./images/dog_move.png'), (200, 100))
+IMG_SLEEPING = pg.transform.scale(pg.image.load('./images/dog_sleeping.png'), (200, 100))
+
 # Initialize variables for later use
 msg = None
 playAgainDisplayed = False
@@ -33,20 +38,28 @@ def handle(btns, nova, wolf, window):
                     if nova.hunger < nova.maxHunger:
                         nova.Eat()
                         wolf.ChooseAction()
+
+                        animateAction("eat", window, nova, wolf)
                     else: msg = f"Nova is full. The wolves are {abs(nova.dist - wolf.dist)}km away!"
 
                 if btns[jog].collidepoint(pos):
                     nova.Jog()
                     wolf.ChooseAction()
 
+                    animateAction("jog", window, nova, wolf)
+
                 if btns[run].collidepoint(pos):
                     nova.Run()
                     wolf.ChooseAction()
+
+                    animateAction("run", window, nova, wolf)
 
                 if btns[sleep].collidepoint(pos):
                     if nova.sleep < nova.maxSleep:
                         nova.Sleep()
                         wolf.ChooseAction()
+                    
+                        animateAction("sleep", window, nova, wolf)
                     else: msg = f"Nova isn't tired. The wolves are {abs(nova.dist - wolf.dist)}km away!"
             # If game is done, only accept play again
             else:
@@ -110,6 +123,59 @@ def outputMsg(window, msg):
     output = font.render(f">> {msg}", True, (0, 0, 0)) # Text to output
     height = output.get_rect().height # Get the size of the text for use in alignment
     window.blit(output, (10, 275 - height / 2)) # Output the text to the output bar
+
+def animateAction(action, window, nova, wolf):
+    # Create a dictionary to link actions to images
+    actionImgs = {
+        "eat": IMG_EATING,
+        "jog": IMG_MOVING,
+        "run": IMG_MOVING,
+        "sleep": IMG_SLEEPING
+    }
+
+    # Get the image for the action
+    img = actionImgs[action]
+    
+    if action == "jog" or action == "run":
+        # Define animation speed
+        speed = 2 if action == "jog" else 3
+
+        x = -200 # Set starting x position for animation
+
+        # Runs while the image is still on screen
+        while x < 500:
+            # Redraw static parts to hide previous frame
+            forestOverlay(window)
+            updateStatus(window, nova)
+            handleOutput(window, nova, wolf)
+
+            # Draw the image at the correct position
+            window.blit(img, (x, 200 - img.get_height() / 2))
+
+            # Update display and increase animation's x position
+            pg.display.update()
+            x += speed
+    else:
+        # Initialize variables used for timing
+        CLOCK = pg.time.Clock()
+        time_elapsed = 0
+
+        # While time elapsed is less than animation's FPS * (number of seconds for animation to last)
+        while time_elapsed <= 60 * 2:
+            # Redraw static parts to hide previous frame
+            forestOverlay(window)
+            updateStatus(window, nova)
+            handleOutput(window, nova, wolf)
+
+            # Draw the image at the correct position
+            window.blit(img, (250 - img.get_width() / 2, 200 - img.get_height() / 2))
+
+            # Add (1/FPS)/second to time_elapsed
+            time_elapsed += 1
+
+            # Preserve 60 FPS frame rate and update display
+            CLOCK.tick(60)
+            pg.display.update()
 
 # Displays play again dialouge
 def showPlayAgainDialogue(window):
